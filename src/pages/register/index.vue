@@ -24,7 +24,7 @@
             <image class="w-1/2 h-8" :src="codeImg" />
           </view>
         </uni-forms-item>
-        <button type="primary" @click="submitForm('forms')">注册</button>
+        <button class="web-height" type="primary" @click="submitForm('forms')">注册</button>
       </uni-forms>
     </view>
   </view>
@@ -89,3 +89,11 @@ const submitForm = async () => {
   console.log(formData.value, 1111);
 };
 </script>
+
+<style scoped>
+/* ifdef H5 */
+.web-height {
+  padding: 20rpx 0;
+}
+/* endif */
+</style>
