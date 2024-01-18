@@ -1,72 +1,91 @@
-<!--
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
--->
 <template>
   <view class="flex h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
     <view class="sm:mx-auto sm:w-full sm:max-w-sm">
       <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" />
-      <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in to your account</h2>
+      <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">注册云盘账号</h2>
     </view>
 
     <view class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form class="space-y-6" action="#" method="POST">
-        <view>
-          <label for="email" class="block text-sm font-medium leading-6 text-gray-900">用户名</label>
-          <view class="mt-2">
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autocomplete="email"
-              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </view>
-        </view>
-
-        <view>
-          <view class="flex items-center justify-between">
-            <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
-            <view class="text-sm">
-              <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</a>
+      <uni-forms ref="forms" :rules="rules" :modelValue="formData" label-position="top">
+        <uni-forms-item required label="用户名" name="username">
+          <uni-easyinput type="text" v-model="formData.username" placeholder="请输入用户名" />
+        </uni-forms-item>
+        <uni-forms-item required label="密码" name="password">
+          <uni-easyinput type="password" v-model="formData.password" placeholder="请输入密码" />
+        </uni-forms-item>
+        <uni-forms-item required label="再次输入" name="againPassword">
+          <uni-easyinput type="password" v-model="formData.againPassword" placeholder="请再次输入密码" />
+        </uni-forms-item>
+        <uni-forms-item required name="code" label="验证码">
+          <view class="flex items-center">
+            <view class="w-1/2">
+              <uni-easyinput type="text" v-model="formData.code" placeholder="请输入验证码" />
             </view>
+            <image class="w-1/2 h-8" :src="codeImg" />
           </view>
-          <view class="mt-2">
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autocomplete="current-password"
-              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </view>
-        </view>
-
-        <view>
-          <button
-            type="submit"
-            class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Sign in
-          </button>
-        </view>
-      </form>
-
-      <p class="mt-10 text-center text-sm text-gray-500">
-        Not a member?
-        {{ " " }}
-        <a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Start a 14 day free trial</a>
-      </p>
+        </uni-forms-item>
+        <button type="primary" @click="submitForm('forms')">注册</button>
+      </uni-forms>
     </view>
   </view>
 </template>
+
+<script setup>
+import { ref } from "vue";
+const forms = ref();
+const formData = ref({
+  username: "",
+  password: "",
+  againPassword: "",
+  code: "",
+});
+const rules = ref({
+  username: {
+    rules: [
+      {
+        required: true,
+        errorMessage: "请输入用户名",
+      },
+      {
+        minLength: 3,
+        maxLength: 5,
+        errorMessage: "用户名长度在 {minLength} 到 {maxLength} 个字符",
+      },
+    ],
+  },
+  password: {
+    rules: [
+      {
+        required: true,
+        errorMessage: "请输入密码",
+      },
+      {
+        minLength: 3,
+        maxLength: 5,
+        errorMessage: "密码名长度在 {minLength} 到 {maxLength} 个字符",
+      },
+    ],
+  },
+  againPassword: {
+    rules: [
+      {
+        required: true,
+        errorMessage: "请再次输入用密码",
+      },
+      {
+        validateFunction: function (rule, value, data, callback) {
+          if (value !== data.password) {
+            callback("两次输入的密码必须相同！");
+          }
+          return true;
+        },
+      },
+    ],
+  },
+});
+const codeImg = ref("https://nest-cloud-be.vercel.app/api/vercode");
+const submitForm = async () => {
+  await forms.value.validate();
+  console.log(formData.value, 1111);
+};
+</script>
