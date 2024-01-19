@@ -4,6 +4,7 @@ export const request = ({ url, method, data, }) => new Promise((resolve, rej) =>
         url: "https://nest-cloud-be.vercel.app" + url,
         method,
         data,
+        withCredentials: true,
         success: ({ data }) => {
             resolve(data)
         },
