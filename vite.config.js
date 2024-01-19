@@ -5,7 +5,7 @@ import { UnifiedViteWeappTailwindcssPlugin as uvwt } from 'weapp-tailwindcss/vit
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode, isSsrBuild, isPreview }) => {
-  const serverIp = command === 'dev' ? 'http://localhost:3000' : 'https://nest-cloud-be.vercel.app';
+  const serverIp = command === 'serve' ? 'http://localhost:3000' : 'https://nest-cloud-be.vercel.app';
   return {
     plugins: [
       uni(),
