@@ -21,10 +21,10 @@
             <view class="w-1/2">
               <uni-easyinput type="text" v-model="formData.code" placeholder="请输入验证码" />
             </view>
-            <image class="w-1/2 h-8" :src="codeImg" />
+            <image class="w-1/2 h-8" :src="codeImg" @click="changeCodeImg" />
           </view>
         </uni-forms-item>
-        <button class="web-height" type="primary" @click="submitForm('forms')">注册</button>
+        <button class="h-11 flex items-center justify-center" type="primary" @click="submitForm('forms')">注册</button>
       </uni-forms>
     </view>
   </view>
@@ -32,6 +32,8 @@
 
 <script setup>
 import { ref } from "vue";
+import { registerApi, noUserNameApi, verCodeApi } from "@/api/users.js";
+
 const forms = ref();
 const formData = ref({
   username: "",
@@ -48,8 +50,20 @@ const rules = ref({
       },
       {
         minLength: 3,
-        maxLength: 5,
+        maxLength: 12,
         errorMessage: "用户名长度在 {minLength} 到 {maxLength} 个字符",
+      },
+      {
+        validateFunction: (rule, value) => {
+          return new Promise(async (resolve, reject) => {
+            const res = await noUserNameApi(value);
+            if (res?.data) {
+              resolve();
+            } else {
+              reject(new Error("用户名已存在"));
+            }
+          });
+        },
       },
     ],
   },
@@ -60,8 +74,8 @@ const rules = ref({
         errorMessage: "请输入密码",
       },
       {
-        minLength: 3,
-        maxLength: 5,
+        minLength: 6,
+        maxLength: 20,
         errorMessage: "密码名长度在 {minLength} 到 {maxLength} 个字符",
       },
     ],
@@ -82,18 +96,47 @@ const rules = ref({
       },
     ],
   },
+  code: {
+    rules: [
+      {
+        required: true,
+        errorMessage: "请输入验证码",
+      },
+      {
+        length: 5,
+        errorMessage: "密码名长度是 {length} 个字符",
+      },
+      {
+        validateFunction: (rule, value) => {
+          return new Promise(async (resolve, reject) => {
+            const res = await verCodeApi({ code: value });
+            if (res?.data) {
+              resolve();
+            } else {
+              changeCodeImg();
+              reject(new Error("验证码错误!"));
+            }
+          });
+        },
+      },
+    ],
+  },
 });
-const codeImg = ref("https://nest-cloud-be.vercel.app/api/vercode");
+const codeImg = ref("/api/vercode");
+
+const changeCodeImg = () => {
+  codeImg.value = `${codeImg.value}?${Math.random()}`;
+};
 const submitForm = async () => {
   await forms.value.validate();
   console.log(formData.value, 1111);
+  const res = await registerApi({
+    username: formData.value.username,
+    password: formData.value.password,
+    code: formData.value.code,
+    createdAt: new Date(),
+    organization: "common",
+  });
+  console.log(res, 22222);
 };
 </script>
-
-<style scoped>
-/* ifdef H5 */
-.web-height {
-  padding: 20rpx 0;
-}
-/* endif */
-</style>

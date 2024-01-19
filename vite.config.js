@@ -12,5 +12,13 @@ export default defineConfig({
     postcss: {
       plugins: postcssPlugins
     }
-  }
+  },
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:3000",
+        changeOrigin: true
+      },
+    },
+  },
 })
