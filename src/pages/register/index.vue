@@ -122,14 +122,13 @@ const rules = ref({
     ],
   },
 });
-const codeImg = ref("/api/vercode");
+const codeImg = ref("https://nest-cloud-be.vercel.app/api/vercode");
 
 const changeCodeImg = () => {
   codeImg.value = `${codeImg.value}?${Math.random()}`;
 };
 const submitForm = async () => {
   await forms.value.validate();
-  console.log(formData.value, 1111);
   const res = await registerApi({
     username: formData.value.username,
     password: formData.value.password,
