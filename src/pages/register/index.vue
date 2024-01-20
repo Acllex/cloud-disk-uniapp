@@ -122,7 +122,7 @@ const rules = ref({
     ],
   },
 });
-const codeImg = ref("https://nest-cloud-be.vercel.app/api/vercode");
+const codeImg = ref("https://www.998115.xyz/api/vercode");
 
 const changeCodeImg = () => {
   codeImg.value = `${codeImg.value}?${Math.random()}`;
