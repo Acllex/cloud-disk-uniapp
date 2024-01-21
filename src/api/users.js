@@ -11,7 +11,14 @@ const registerApi = async (data) => await request({
     method: 'post',
     data
 })
-
+/**
+ * 登录
+ */
+const loginApi = async (data) => await request({
+    url: '/api/auth',
+    method: 'post',
+    data
+})
 /**
  * 是否重名
  */
@@ -28,4 +35,4 @@ const verCodeApi = async (data) => await request({
     method: 'post',
     data
 })
-export { registerApi, noUserNameApi, verCodeApi }
+export { registerApi, loginApi, noUserNameApi, verCodeApi }

@@ -24,7 +24,7 @@
             <image class="w-1/2 h-8" :src="codeImg" @click="changeCodeImg" />
           </view>
         </uni-forms-item>
-        <button class="h-11 flex items-center justify-center" type="primary" @click="submitForm('forms')">注册</button>
+        <button class="mt-8 h-11 flex items-center justify-center" type="primary" @click="submitForm('forms')">注册</button>
       </uni-forms>
     </view>
   </view>
@@ -122,7 +122,7 @@ const rules = ref({
     ],
   },
 });
-const codeImg = ref("https://www.998115.xyz/api/vercode");
+const codeImg = ref("https://api.joon.eu.org/api/vercode");
 
 const changeCodeImg = () => {
   codeImg.value = `${codeImg.value}?${Math.random()}`;

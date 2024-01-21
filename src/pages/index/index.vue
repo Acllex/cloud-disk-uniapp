@@ -30,16 +30,12 @@
   </view>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      title: "Hello",
-    };
-  },
-  onLoad() {},
-  methods: {},
-};
+<script setup>
+import { onPullDownRefresh } from "@dcloudio/uni-app";
+onPullDownRefresh(() => {
+  console.log(11222);
+  uni.stopPullDownRefresh();
+});
 </script>
 <style lang="scss">
 .slot-box {

@@ -1,15 +1,24 @@
 {
   "pages": [
     {
-      "path": "pages/register/index",
+      "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "注册"
+        "navigationBarTitleText": "我的文件",
+        "onReachBottomDistance": 150,
+        "enablePullDownRefresh": true,
+        "backgroundColor": "#F8F8F8"
       }
     },
     {
-      "path": "pages/index/index",
+      "path": "pages/login/index",
       "style": {
-        "navigationBarTitleText": "文件"
+        "navigationBarTitleText": "登录"
+      }
+    },
+    {
+      "path": "pages/register/index",
+      "style": {
+        "navigationBarTitleText": "注册"
       }
     },
     {
