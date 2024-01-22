@@ -17,10 +17,10 @@
 
   <view class="p-3">
     <uni-grid :column="3" :highlight="true" :show-border="false" :square="false" @change="change">
-      <uni-grid-item v-for="(item, index) in 4" :index="index" :key="index">
+      <uni-grid-item v-for="(item, index) in files" :index="index" :key="index">
         <view class="h-full flex flex-col items-center justify-center" style="background-color: #fff">
           <img class="w-16 h-14" src="../../static/icons/folder.png" />
-          <text class="text">文本信息</text>
+          <text class="text">{{ item.filename }}</text>
           <view @click.stop="moreSel(index)">
             <uni-icons type="more-filled" size="20" color="#bfbfbf"></uni-icons>
           </view>
@@ -70,19 +70,14 @@ const { getFiles } = store;
 const popupRef = ref();
 const inputDialog = ref();
 
-onLoad((options) => {
-  const token = uni.getStorageSync("access_token");
-
-  getFiles();
-});
-
 onPullDownRefresh(() => {
   console.log(11222);
+
   uni.stopPullDownRefresh();
 });
 
-const change = (e) => {
-  console.log(e);
+const change = ({ detail }) => {
+  console.log(detail);
 };
 const moreSel = (index) => {
   console.log(index);

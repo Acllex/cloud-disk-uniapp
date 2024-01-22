@@ -3,7 +3,7 @@ import { request } from '@/utils/index.js'
 /**
  * 新建文件或文件夹
  */
-const createFiles = async (data) => await request({
+const createFilesApi = async (data) => await request({
     url: '/api/files',
     method: 'post',
     data
@@ -17,4 +17,4 @@ const getFilesApi = async (data) => await request({
     data
 })
 
-export { createFiles, getFilesApi }
+export { createFilesApi, getFilesApi }

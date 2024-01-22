@@ -9,7 +9,6 @@ export const request = ({ url, method, data, }) => new Promise((resolve, rej) =>
             authorization: uni.getStorageSync('access_token')
         },
         success: ({ data }) => {
-            console.log(data);
             resolve(data)
         },
         fail: (err) => {
