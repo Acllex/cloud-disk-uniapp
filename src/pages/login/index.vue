@@ -97,11 +97,14 @@ const changeCodeImg = () => {
 };
 const submitForm = async () => {
   await forms.value.validate();
-  const res = await loginApi({
+  const { data, success } = await loginApi({
     username: formData.value.username,
     password: formData.value.password,
     code: formData.value.code,
   });
-  localStorage.setItem("access_token", `Bearer ${res.access_token}`);
+  if (success) {
+    uni.setStorage({ key: "access_token", data: `Bearer ${data.access_token}` });
+    uni.reLaunch({ url: "/pages/index/index" });
+  }
 };
 </script>

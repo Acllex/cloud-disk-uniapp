@@ -1,64 +1,93 @@
 <template>
-  <view class="content">
-    <uni-list>
-      <uni-list-item>
-        <template v-slot:body>
-          <view class="slot-box">
-            <text class="slot-text">使用 body 插槽</text>
+  <uni-nav-bar :border="false" backgroundColor="#1296db">
+    <template v-slot:left>
+      <view class="w-full flex justify-center">
+        <text class="text-lg text-white"> 文件 </text>
+      </view>
+    </template>
+    <view class="flex w-full items-center justify-end">
+      <uni-icons type="plusempty" color="#fff" size="26" @click="() => popupRef.open('bottom')" />
+    </view>
+    <template v-slot:right>
+      <view class="w-full flex justify-center">
+        <uni-icons type="search" size="26" color="#fff" />
+      </view>
+    </template>
+  </uni-nav-bar>
+
+  <view class="p-3">
+    <uni-grid :column="3" :highlight="true" :show-border="false" :square="false" @change="change">
+      <uni-grid-item v-for="(item, index) in 4" :index="index" :key="index">
+        <view class="h-full flex flex-col items-center justify-center" style="background-color: #fff">
+          <img class="w-16 h-14" src="../../static/icons/folder.png" />
+          <text class="text">文本信息</text>
+          <view @click.stop="moreSel(index)">
+            <uni-icons type="more-filled" size="20" color="#bfbfbf"></uni-icons>
           </view>
-        </template>
-      </uni-list-item>
-      <uni-list-item title="自定义右侧插槽" note="列表描述信息" link>
-        <template v-slot:footer>
-          <image class="slot-image" src="/static/logo.png" mode="widthFix"></image>
-        </template>
-      </uni-list-item>
-      <uni-list-item>
-        <template v-slot:header>
-          <view class="slot-box">
-            <image class="slot-image" src="/static/logo.png" mode="widthFix"></image>
-          </view>
-        </template>
-        <template v-slot:body>
-          <text class="slot-box slot-text text-3xl font-bold text-slate-100">自定义两侧插槽</text>
-        </template>
-        <template v-slot:footer>
-          <image class="slot-image" src="/static/logo.png" mode="widthFix"></image>
-        </template>
-      </uni-list-item>
-    </uni-list>
+        </view>
+      </uni-grid-item>
+    </uni-grid>
   </view>
+  <uni-popup ref="popupRef" background-color="#fff">
+    <view class="h-32 p-3 flex flex-col">
+      <view class="mb-3">
+        <text
+          class="text-base"
+          @click="
+            () => {
+              inputDialog.open();
+              popupRef.close();
+            }
+          "
+          >创建文件夹</text
+        >
+      </view>
+      <view class="mb-3">
+        <text class="text-base">上传</text>
+      </view>
+    </view>
+  </uni-popup>
+  <uni-popup ref="inputDialog" type="dialog">
+    <uni-popup-dialog
+      ref="inputClose"
+      mode="input"
+      title="创建新文件夹"
+      placeholder="请输入文件夹名称"
+      @confirm="dialogInputConfirm"
+    ></uni-popup-dialog>
+  </uni-popup>
 </template>
 
 <script setup>
-import { onPullDownRefresh } from "@dcloudio/uni-app";
+import { useFilesStore } from "@/stores/files";
+import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app";
+import { ref, onMounted } from "vue";
+import { storeToRefs } from "pinia";
+
+const store = useFilesStore();
+const { files, loading } = storeToRefs(store);
+const { getFiles } = store;
+const popupRef = ref();
+const inputDialog = ref();
+
+onLoad((options) => {
+  const token = uni.getStorageSync("access_token");
+
+  getFiles();
+});
+
 onPullDownRefresh(() => {
   console.log(11222);
   uni.stopPullDownRefresh();
 });
+
+const change = (e) => {
+  console.log(e);
+};
+const moreSel = (index) => {
+  console.log(index);
+};
+const dialogInputConfirm = (val) => {
+  console.log(val);
+};
 </script>
-<style lang="scss">
-.slot-box {
-  /* #ifndef APP-NVUE */
-  display: flex;
-  /* #endif */
-  flex-direction: row;
-  align-items: center;
-}
-
-.slot-image {
-  /* #ifndef APP-NVUE */
-  display: block;
-  /* #endif */
-  margin-right: 10px;
-  width: 30px;
-  height: 30px;
-}
-
-.slot-text {
-  flex: 1;
-  font-size: 14px;
-  /* color: #4cd964; */
-  margin-right: 10px;
-}
-</style>

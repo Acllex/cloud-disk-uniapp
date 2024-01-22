@@ -6,9 +6,10 @@ export const request = ({ url, method, data, }) => new Promise((resolve, rej) =>
         data,
         withCredentials: true,
         header: {
-            authorization: localStorage.getItem('access_token')
+            authorization: uni.getStorageSync('access_token')
         },
         success: ({ data }) => {
+            console.log(data);
             resolve(data)
         },
         fail: (err) => {
