@@ -21,8 +21,8 @@
     <uni-grid :column="3" :highlight="true" :show-border="false" :square="false" @change="change">
       <uni-grid-item v-for="(item, index) in current" :index="index" :key="index">
         <view class="h-full flex flex-col items-center justify-center" style="background-color: #fff">
-          <img class="w-16 h-14" src="../../static/icons/folder.png" />
-          <text class="text">{{ item.filename }}</text>
+          <img class="w-16 h-14" :src="typeToIcon(item.type, item.ipfs)" @click="previewImage(item.type, item.ipfs)" />
+          <view class="w-10/12 text-center text truncate">{{ item.filename }}</view>
           <view @click.stop="moreSel(index)">
             <uni-icons type="more-filled" size="20" color="#bfbfbf"></uni-icons>
           </view>
@@ -68,6 +68,19 @@ import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app";
 import { ref, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 
+const typeToIcon = (type, ipfs) => {
+  const filesArr = ["folder", "zip", "pdf"];
+  const imgArr = ["image"];
+  const file = filesArr.find((item) => type.indexOf(item) !== -1);
+  const img = imgArr.find((item) => type.indexOf(item) !== -1);
+
+  if (file) {
+    return `../../static/icons/${file}.png`;
+  } else if (img) {
+    return ipfs;
+  }
+};
+
 const store = useFilesStore();
 const { parentStack, current } = storeToRefs(store);
 const { getFiles, addFolder, addFile } = store;
@@ -83,8 +96,17 @@ onPullDownRefresh(() => {
 });
 
 const change = ({ detail }) => {
-  const { filename, _id } = current.value[detail.index];
-  getFiles({ name: filename, val: { parentId: _id } });
+  const { filename, _id, type, ipfs } = current.value[detail.index];
+  switch (type) {
+    case "folder":
+      getFiles({ name: filename, val: { parentId: _id } });
+      break;
+    case "application/x-zip-compressed":
+      // window.location.href = ipfs;
+      break;
+    default:
+      break;
+  }
 };
 const onReturn = () => {
   getFiles({ val: { parentId: parentStack.value[parentStack.value.length - 2].id } });
@@ -101,6 +123,7 @@ const dialogInputConfirm = (val) => {
   });
 };
 const selectFiles = async (val) => {
+  popupRef.value.close();
   for (let index = 0; index < val.tempFiles.length; index++) {
     const element = val.tempFiles[index];
     await addFile({
@@ -111,6 +134,10 @@ const selectFiles = async (val) => {
       createdAt: new Date(),
     });
   }
-  console.log(val.tempFiles);
+};
+const previewImage = (type, ipfs) => {
+  if (type.indexOf("image") !== 1) {
+    uni.previewImage({ urls: [ipfs] });
+  }
 };
 </script>

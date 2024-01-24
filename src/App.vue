@@ -13,9 +13,9 @@ onHide(() => {
 });
 </script>
 
-<style>
+<style lang="scss">
 /*每个页面公共css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 </style>

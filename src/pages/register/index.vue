@@ -136,6 +136,5 @@ const submitForm = async () => {
     createdAt: new Date(),
     organization: "common",
   });
-  console.log(res, 22222);
 };
 </script>

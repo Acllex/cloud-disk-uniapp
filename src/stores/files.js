@@ -73,7 +73,7 @@ export const useFilesStore = defineStore('files', () => {
         try {
             const cid = await client.storeDirectory([val.file]);
             delete val.file;
-            const { status, statusCode, data, message } = await createFilesApi({ ...val, ipfs: cid })
+            const { status, statusCode, data, message } = await createFilesApi({ ...val, ipfs: `https://ipfs.io/ipfs/${cid}/${val.filename}` })
             if (status) {
                 current.value.push(data);
             } else {
