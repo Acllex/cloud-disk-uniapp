@@ -63,7 +63,7 @@
 </template>
 
 <script setup>
-import { useFilesStore } from "@/stores/files";
+import { useFilesStore } from "@/stores/files.js";
 import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app";
 import { ref, onMounted } from "vue";
 import { storeToRefs } from "pinia";
