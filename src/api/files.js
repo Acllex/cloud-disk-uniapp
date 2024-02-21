@@ -16,5 +16,12 @@ const getFilesApi = async (data) => await request({
     method: 'post',
     data
 })
+/**
+ * 删除文件
+ */
+const delFilesApi = async (id) => await request({
+    url: `/api/files/${id}`,
+    method: 'delete'
+})
 
-export { createFilesApi, getFilesApi }
+export { createFilesApi, getFilesApi, delFilesApi }

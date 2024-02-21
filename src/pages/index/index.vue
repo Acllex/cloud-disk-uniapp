@@ -60,6 +60,26 @@
       @confirm="dialogInputConfirm"
     ></uni-popup-dialog>
   </uni-popup>
+  <!-- 单文件操作 -->
+  <uni-popup ref="filePopupRef" background-color="#fff">
+    <view class="h-32 p-3 flex flex-col">
+      <view class="mb-3">
+        <text class="text-base">重命名</text>
+      </view>
+      <view class="mb-3">
+        <text
+          class="text-base"
+          @click="
+            () => {
+              delFiles(selFile._id);
+              filePopupRef.close();
+            }
+          "
+          >删除</text
+        >
+      </view>
+    </view>
+  </uni-popup>
 </template>
 
 <script setup>
@@ -83,10 +103,11 @@ const typeToIcon = (type, ipfs) => {
 
 const store = useFilesStore();
 const { parentStack, current } = storeToRefs(store);
-const { getFiles, addFolder, addFile } = store;
+const { getFiles, addFolder, addFile, delFiles } = store;
 const popupRef = ref();
 const inputDialog = ref();
-
+const filePopupRef = ref();
+const selFile = ref();
 onLoad(() => {
   getFiles({ name: "根目录", val: { parentId: "root" } });
 });
@@ -112,7 +133,8 @@ const onReturn = () => {
   getFiles({ val: { parentId: parentStack.value[parentStack.value.length - 2].id } });
 };
 const moreSel = (index) => {
-  console.log(index);
+  selFile.value = current.value[index];
+  filePopupRef.value.open("bottom");
 };
 const dialogInputConfirm = (val) => {
   addFolder({
