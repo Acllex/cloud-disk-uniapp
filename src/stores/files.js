@@ -74,9 +74,10 @@ export const useFilesStore = defineStore('files', () => {
     // 添加文件
     async function addFile(val) {
         try {
-            const cid = await client.storeDirectory([val.file]);
+            const content = new Blob([val.file])
+            const cid = await client.storeBlob(content);
             delete val.file;
-            const { status, statusCode, data, message } = await createFilesApi({ ...val, ipfs: `https://ipfs.io/ipfs/${cid}/${val.filename}` })
+            const { status, statusCode, data, message } = await createFilesApi({ ...val, ipfs: `https://${cid}.ipfs.nftstorage.link` })
             if (status) {
                 current.value.push(data);
             } else {
@@ -91,11 +92,13 @@ export const useFilesStore = defineStore('files', () => {
     }
 
     // 删除文件/文件夹
-    async function delFiles(id) {
+    async function delFiles(id, ipfs) {
         try {
+            const cid = ipfs.slice(7, ipfs.indexOf('.'))
+            await client.delete(cid)
             const { status, statusCode, data, message } = await delFilesApi(id)
             if (status) {
-                current.value.filter(item => item._id !== id);
+                current.value = current.value.filter(item => item._id !== id);
             } else {
                 uni.showToast({
                     title: message,

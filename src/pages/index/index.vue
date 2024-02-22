@@ -19,8 +19,8 @@
 
   <view class="p-3">
     <uni-grid :column="3" :highlight="true" :show-border="false" :square="false" @change="change">
-      <uni-grid-item v-for="(item, index) in current" :index="index" :key="index">
-        <view class="h-full flex flex-col items-center justify-center" style="background-color: #fff">
+      <uni-grid-item class="mb-5" v-for="(item, index) in current" :index="index" :key="index">
+        <view class="h-full flex flex-col items-center justify-center">
           <img class="w-16 h-14" :src="typeToIcon(item.type, item.ipfs)" @click="previewImage(item.type, item.ipfs)" />
           <view class="w-10/12 text-center text truncate">{{ item.filename }}</view>
           <view @click.stop="moreSel(index)">
@@ -71,7 +71,7 @@
           class="text-base"
           @click="
             () => {
-              delFiles(selFile._id);
+              delFiles(selFile._id, selFile.ipfs);
               filePopupRef.close();
             }
           "
@@ -87,19 +87,6 @@ import { useFilesStore } from "@/stores/files.js";
 import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app";
 import { ref, onMounted } from "vue";
 import { storeToRefs } from "pinia";
-
-const typeToIcon = (type, ipfs) => {
-  const filesArr = ["folder", "zip", "pdf"];
-  const imgArr = ["image"];
-  const file = filesArr.find((item) => type.indexOf(item) !== -1);
-  const img = imgArr.find((item) => type.indexOf(item) !== -1);
-
-  if (file) {
-    return `../../static/icons/${file}.png`;
-  } else if (img) {
-    return ipfs;
-  }
-};
 
 const store = useFilesStore();
 const { parentStack, current } = storeToRefs(store);
@@ -157,8 +144,22 @@ const selectFiles = async (val) => {
     });
   }
 };
+
+const typeToIcon = (type, ipfs) => {
+  const filesArr = ["folder", "zip", "pdf"];
+  const imgArr = ["image"];
+  const file = filesArr.find((item) => type.indexOf(item) !== -1);
+  const img = imgArr.find((item) => type.indexOf(item) !== -1);
+
+  if (file) {
+    return `../../static/icons/${file}.png`;
+  } else if (img) {
+    return ipfs;
+  }
+};
+
 const previewImage = (type, ipfs) => {
-  if (type.indexOf("image") !== 1) {
+  if (type.indexOf("image") !== -1) {
     uni.previewImage({ urls: [ipfs] });
   }
 };
