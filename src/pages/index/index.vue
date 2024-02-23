@@ -21,7 +21,13 @@
     <uni-grid :column="3" :highlight="true" :show-border="false" :square="false" @change="change">
       <uni-grid-item class="mb-5" v-for="(item, index) in current" :index="index" :key="index">
         <view class="h-full flex flex-col items-center justify-center">
-          <img class="w-16 h-14" :src="typeToIcon(item.type, item.ipfs)" @click="previewImage(item.type, item.ipfs)" />
+          <img
+            v-if="item.type.indexOf('video') === -1"
+            class="w-16 h-14"
+            :src="typeToIcon(item.type, item.ipfs)"
+            @click="previewImage(item.type, item.ipfs)"
+          />
+          <MyVideo v-if="item.type.indexOf('video') !== -1" class="w-16 h-14" :src="item.ipfs" />
           <view class="w-10/12 text-center text truncate">{{ item.filename }}</view>
           <view @click.stop="moreSel(index)">
             <uni-icons type="more-filled" size="20" color="#bfbfbf"></uni-icons>
@@ -87,6 +93,7 @@ import { useFilesStore } from "@/stores/files.js";
 import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app";
 import { ref, onMounted } from "vue";
 import { storeToRefs } from "pinia";
+import MyVideo from "@/components/video/index.vue";
 
 const store = useFilesStore();
 const { parentStack, current } = storeToRefs(store);
@@ -135,6 +142,7 @@ const selectFiles = async (val) => {
   popupRef.value.close();
   for (let index = 0; index < val.tempFiles.length; index++) {
     const element = val.tempFiles[index];
+    console.log(element);
     await addFile({
       filename: element.name,
       type: element.file.type,
@@ -147,7 +155,7 @@ const selectFiles = async (val) => {
 
 const typeToIcon = (type, ipfs) => {
   const filesArr = ["folder", "zip", "pdf"];
-  const imgArr = ["image"];
+  const imgArr = ["image", "video"];
   const file = filesArr.find((item) => type.indexOf(item) !== -1);
   const img = imgArr.find((item) => type.indexOf(item) !== -1);
 
